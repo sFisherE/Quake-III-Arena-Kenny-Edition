@@ -43,6 +43,7 @@ of the entities that are actually solid, to make for more
 efficient collision detection
 ====================
 */
+//将快照中的所有的带碰撞的物体组织一下
 void CG_BuildSolidList( void ) {
 	int			i;
 	centity_t	*cent;
@@ -99,7 +100,7 @@ static void CG_ClipMoveToEntities ( const vec3_t start, const vec3_t mins, const
 		if ( ent->number == skipNumber ) {
 			continue;
 		}
-
+		//solid表示是否可碰撞
 		if ( ent->solid == SOLID_BMODEL ) {
 			// special value for bmodel
 			cmodel = trap_CM_InlineModel( ent->modelindex );
@@ -352,7 +353,7 @@ static void CG_TouchTriggerPrediction( void ) {
 		if ( !cmodel ) {
 			continue;
 		}
-
+		//碰撞检测
 		trap_CM_BoxTrace( &trace, cg.predictedPlayerState.origin, cg.predictedPlayerState.origin, 
 			cg_pmove.mins, cg_pmove.maxs, cmodel, -1 );
 
@@ -421,7 +422,8 @@ void CG_PredictPlayerState( void ) {
 
 
 	// demo playback just copies the moves
-	if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW) ) {
+	if ( cg.demoPlayback 
+		|| (cg.snap->ps.pm_flags & PMF_FOLLOW) ) {
 		CG_InterpolatePlayerState( qfalse );
 		return;
 	}
@@ -450,7 +452,7 @@ void CG_PredictPlayerState( void ) {
 	// save the state before the pmove so we can detect transitions
 	oldPlayerState = cg.predictedPlayerState;
 
-	current = trap_GetCurrentCmdNumber();
+	current = trap_GetCurrentCmdNumber();//cmdNumber
 
 	// if we don't have the commands right after the snapshot, we
 	// can't accurately predict a current position, so just freeze at
@@ -515,6 +517,7 @@ void CG_PredictPlayerState( void ) {
 		// from the snapshot, but on a wan we will have
 		// to predict several commands to get to the point
 		// we want to compare
+		//预测失败的处理逻辑
 		if ( cg.predictedPlayerState.commandTime == oldPlayerState.commandTime ) {
 			vec3_t	delta;
 			float	len;
@@ -566,6 +569,7 @@ void CG_PredictPlayerState( void ) {
 
 		// don't predict gauntlet firing, which is only supposed to happen
 		// when it actually inflicts damage
+		//gauntlet就是近战手锯
 		cg_pmove.gauntletHit = qfalse;
 
 		if ( cg_pmove.pmove_fixed ) {

@@ -88,8 +88,8 @@ void CG_SetInitialSnapshot( snapshot_t *snap ) {
 	centity_t		*cent;
 	entityState_t	*state;
 
-	cg.snap = snap;
-
+	cg.snap = snap;//将传入的快照snap存储为当前快照cg.snap
+	//更新客户端的游戏状态
 	BG_PlayerStateToEntityState( &snap->ps, &cg_entities[ snap->ps.clientNum ].currentState, qfalse );
 
 	// sort out solid entities
@@ -125,6 +125,7 @@ CG_TransitionSnapshot
 The transition point from snap to nextSnap has passed
 ===================
 */
+//在当前快照和下一个快照之间进行过渡，更新游戏状态以实现平滑的动画效果。
 static void CG_TransitionSnapshot( void ) {
 	centity_t			*cent;
 	snapshot_t			*oldFrame;
@@ -181,7 +182,8 @@ static void CG_TransitionSnapshot( void ) {
 		// if we are not doing client side movement prediction for any
 		// reason, then the client events and view changes will be issued now
 		if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW)
-			|| cg_nopredict.integer || cg_synchronousClients.integer ) {
+			|| cg_nopredict.integer 
+			|| cg_synchronousClients.integer ) {
 			CG_TransitionPlayerState( ps, ops );
 		}
 	}
@@ -329,7 +331,7 @@ void CG_ProcessSnapshots( void ) {
 	int				n;
 
 	// see what the latest snapshot the client system has is
-	trap_GetCurrentSnapshotNumber( &n, &cg.latestSnapshotTime );
+	trap_GetCurrentSnapshotNumber( &n, &cg.latestSnapshotTime );//获取客户端系统的最新快照号和时间
 	if ( n != cg.latestSnapshotNum ) {
 		if ( n < cg.latestSnapshotNum ) {
 			// this should never happen
@@ -341,7 +343,7 @@ void CG_ProcessSnapshots( void ) {
 	// If we have yet to receive a snapshot, check for it.
 	// Once we have gotten the first snapshot, cg.snap will
 	// always have valid data for the rest of the game
-	while ( !cg.snap ) {
+	while ( !cg.snap ) {//这里有值就会退出循环
 		snap = CG_ReadNextSnapshot();
 		if ( !snap ) {
 			// we can't continue until we get a snapshot
@@ -350,7 +352,7 @@ void CG_ProcessSnapshots( void ) {
 
 		// set our weapon selection to what
 		// the playerstate is currently using
-		if ( !( snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) ) {
+		if ( !( snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) ) {//SNAPFLAG_NOT_ACTIVE:快照不是活动状态
 			CG_SetInitialSnapshot( snap );
 		}
 	}
@@ -378,11 +380,13 @@ void CG_ProcessSnapshots( void ) {
 			}
 		}
 
+		//判断当前时间cg.time是否在当前快照和下一个快照的服务器时间之间，
+		// 如果是，则跳出循环，表示处于插值状态。
 		// if our time is < nextFrame's, we have a nice interpolating state
 		if ( cg.time >= cg.snap->serverTime && cg.time < cg.nextSnap->serverTime ) {
 			break;
 		}
-
+		//调用CG_TransitionSnapshot函数进行快照过渡，即更新当前快照为下一个快照
 		// we have passed the transition from nextFrame to frame
 		CG_TransitionSnapshot();
 	} while ( 1 );

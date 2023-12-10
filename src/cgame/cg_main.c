@@ -135,6 +135,8 @@ vmCvar_t	cg_thirdPersonAngle;
 vmCvar_t	cg_stereoSeparation;
 vmCvar_t	cg_lagometer;
 vmCvar_t	cg_drawAttacker;
+//按照严格的同步规则进行操作，即每个客户端在接收到其他客户端的更新之前，
+// 必须等待所有客户端都完成了当前的操作
 vmCvar_t	cg_synchronousClients;
 vmCvar_t 	cg_teamChatTime;
 vmCvar_t 	cg_teamChatHeight;
@@ -156,7 +158,7 @@ vmCvar_t 	cg_scorePlum;
 vmCvar_t 	cg_smoothClients;
 vmCvar_t	pmove_fixed;
 //vmCvar_t	cg_pmove_fixed;
-vmCvar_t	pmove_msec;
+vmCvar_t	pmove_msec;//每个逻辑帧中玩家移动的时间量
 vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraOrbit;

@@ -769,10 +769,10 @@ void SV_Frame( int msec ) {
 	}
 
 	// if it isn't time for the next frame, do nothing
-	if ( sv_fps->integer < 1 ) {
+	if ( sv_fps->integer < 1 ) {//sv_fps默认是20帧
 		Cvar_Set( "sv_fps", "10" );
 	}
-	frameMsec = 1000 / sv_fps->integer ;
+	frameMsec = 1000 / sv_fps->integer ;//每一帧50ms
 
 	sv.timeResidual += msec;
 

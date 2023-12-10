@@ -816,6 +816,16 @@ Adjustments are only made when a new snapshot arrives with a rational
 latency, which keeps the adjustment process framerate independent and
 prevents massive overadjustment during times of significant packet loss
 or bursted delayed packets.
+
+调整客户端对服务器时间的视图。
+
+我们尝试使cl.serverTime与服务器对时间的视图加上timeNudge完全相等，
+但由于互联网上存在可变的延迟，它通常需要稍微漂移以适应不同的条件。
+
+我们理想的情况是调整后的时间接近最新的快照时间，但不超过它。
+
+只有在到达具有合理延迟的新快照时才进行调整，这使得调整过程与帧率无关，
+并防止在丢包或延迟突增的情况下出现过度调整。
 =================
 */
 
@@ -914,6 +924,7 @@ void CL_FirstSnapshot( void ) {
 CL_SetCGameTime
 ==================
 */
+//时间处理
 void CL_SetCGameTime( void ) {
 	// getting a valid frame message ends the connection process
 	if ( cls.state != CA_ACTIVE ) {

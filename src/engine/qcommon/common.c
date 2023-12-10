@@ -68,7 +68,7 @@ cvar_t	*com_timescale;
 cvar_t	*com_fixedtime;
 cvar_t	*com_dropsim;		// 0.0 to 1.0, simulated packet drops
 cvar_t	*com_journal;
-cvar_t	*com_maxfps;
+cvar_t	*com_maxfps;//客户端帧率
 cvar_t	*com_timedemo;
 cvar_t	*com_sv_running;
 cvar_t	*com_cl_running;

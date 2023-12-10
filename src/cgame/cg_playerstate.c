@@ -446,6 +446,7 @@ CG_TransitionPlayerState
 
 ===============
 */
+//处理玩家状态之间的平滑过渡。它主要用于在不同的游戏帧之间更新玩家的状态，以实现流畅的动画和状态转换效果。
 void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 	// check for changing follow mode
 	if ( ps->clientNum != ops->clientNum ) {
@@ -480,6 +481,7 @@ void CG_TransitionPlayerState( playerState_t *ps, playerState_t *ops ) {
 	// run events
 	CG_CheckPlayerstateEvents( ps, ops );
 
+	//"ducking viewheight"指的是玩家蹲下时的视角高度调整
 	// smooth the ducking viewheight change
 	if ( ps->viewheight != ops->viewheight ) {
 		cg.duckChange = ps->viewheight - ops->viewheight;
